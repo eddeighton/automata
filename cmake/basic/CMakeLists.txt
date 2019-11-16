@@ -27,4 +27,6 @@ link_boost( automatalib serialization )
 
 install( FILES ${AUTOMATA_HEADERS} DESTINATION include)
 
+install( FILES ${AUTOMATA_ROOT_DIR}/.eg DESTINATION . )
+
 install( TARGETS automatalib DESTINATION lib)

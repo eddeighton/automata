@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EG xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///W:/workspace/eg/src/driver/schema.xsd">
+	<Package>
+		<Name>automata</Name>
+		<License/>
+        <Description>Automata related utility routines</Description>
+        <Directories>
+            <Include>${EG}/third_party/install/automata/include</Include>
+            <Include>${EG}/third_party/install/boost/include/boost-1_70</Include>
+        </Directories>
+        <Files>
+            <Library>${EG}/third_party/install/automata/lib/automatalib.lib</Library>
+        </Files>
+	</Package>
+</EG>
