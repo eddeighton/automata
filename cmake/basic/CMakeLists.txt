@@ -25,7 +25,7 @@ link_boost( automatalib iostreams )
 link_boost( automatalib serialization )
 
 
-install( FILES ${AUTOMATA_HEADERS} DESTINATION include)
+install( FILES ${AUTOMATA_HEADERS} DESTINATION include/automata )
 
 install( FILES ${AUTOMATA_ROOT_DIR}/.eg DESTINATION . )
 
