@@ -1,4 +1,7 @@
 
+#ifndef ALPHABET_31_12_2019
+#define ALPHABET_31_12_2019
+
 #include <array>
 #include <cstdint>
 #include <stdexcept>
@@ -47,9 +50,7 @@ namespace automata
         CHECK_COMPONENT_RANGE( value, bound )
         return product;
     }
-    
-    
-    using State         = std::int32_t; //zero indexed
-    using Action        = std::int32_t; //zero indexed
-    
+        
 }
+
+#endif //ALPHABET_31_12_2019

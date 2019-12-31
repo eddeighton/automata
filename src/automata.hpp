@@ -1,6 +1,12 @@
 
-#ifndef AUTOMATA_16_11_2019
-#define AUTOMATA_16_11_2019
+#ifndef AUTOMATA_31_12_2019
+#define AUTOMATA_31_12_2019
+
+#include "alphabet.hpp"
+
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
 
 #include <cstdint>
 #include <tuple>
@@ -8,6 +14,40 @@
 
 namespace automata
 {
+    
+    
+    
+    template< typename ActionType_, typename StateType_, typename GeometryTraits_ >
+    struct AutomataTraits
+    {
+        using ActionType  = ActionType_;
+        using StateType   = StateType_;
+        using GeometryTraits = GeometryTraits_;
+        
+        struct State
+        {
+            int index;
+            StateType state;
+            typename GeometryTraits::point2d position;
+        };
+        
+        struct Action
+        {
+            int index;
+            ActionType action;
+            ActionType continuation;
+            int weight;
+        };
+        
+        using Graph = boost::adjacency_list< 
+            boost::vecS, boost::vecS, boost::bidirectionalS,
+            State, Action >;
+            
+        //using Vertex = boost::graph_traits< Graph >::vertex_descriptor;
+    };
+    
+    
+    
     
     
     /*
@@ -88,4 +128,4 @@ namespace automata
 }
 
 
-#endif //AUTOMATA_16_11_2019
+#endif //AUTOMATA_31_12_2019

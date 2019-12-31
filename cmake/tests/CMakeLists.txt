@@ -7,6 +7,9 @@ include( ${AUTOMATA_ROOT_DIR}/cmake/boost_include.cmake )
 #get gtest
 include( ${AUTOMATA_ROOT_DIR}/cmake/gtest_include.cmake )
 
+#get glm
+include( ${AUTOMATA_ROOT_DIR}/cmake/glm_include.cmake )
+
 #get automata
 include( ${AUTOMATA_ROOT_DIR}/cmake/auto/auto_include.cmake )
 
