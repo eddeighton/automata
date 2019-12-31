@@ -2,16 +2,15 @@
 #ifndef AUTOMATA_16_11_2019
 #define AUTOMATA_16_11_2019
 
-
 #include <cstdint>
-#include <vector>
-#include <string>
-#include <array>
+#include <tuple>
+#include <utility>
 
 namespace automata
 {
-    std::string getVersion();
     
+    
+    /*
     using State         = std::int32_t;
     using Action        = std::int32_t;
     
@@ -79,6 +78,9 @@ namespace automata
         
         return table;
     }
+    */
+    
+    
     
     
     

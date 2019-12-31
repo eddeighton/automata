@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.14.2)
 include( ${AUTOMATA_ROOT_DIR}/cmake/boost_include.cmake )
 
 set( AUTOMATA_HEADERS
+    ${AUTOMATA_SRC_DIR}/alphabet.hpp
     ${AUTOMATA_SRC_DIR}/automata.hpp
     )
 
@@ -24,9 +25,6 @@ link_boost( automatalib filesystem )
 link_boost( automatalib iostreams )
 link_boost( automatalib serialization )
 
-
 install( FILES ${AUTOMATA_HEADERS} DESTINATION include/automata )
-
 install( FILES ${AUTOMATA_ROOT_DIR}/.eg DESTINATION . )
-
 install( TARGETS automatalib DESTINATION lib)

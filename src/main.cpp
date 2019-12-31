@@ -7,7 +7,7 @@
 int main( int argc, const char* argv[] )
 {
 
-    std::cout << "Automata version: " << automata::getVersion() << std::endl;
+    std::cout << "Automata version: " << std::endl;
 
 
     return 0;

@@ -49,3 +49,4 @@ project( automata )
 
 add_subdirectory( basic )
 add_subdirectory( auto )
+add_subdirectory( tests )
