@@ -7,6 +7,7 @@ include( ${AUTOMATA_ROOT_DIR}/cmake/boost_include.cmake )
 set( AUTOMATA_HEADERS
     ${AUTOMATA_SRC_DIR}/alphabet.hpp
     ${AUTOMATA_SRC_DIR}/automata.hpp
+    ${AUTOMATA_SRC_DIR}/glm_graph_traits.hpp
     )
 
 set( AUTOMATA_SOURCES
@@ -21,11 +22,11 @@ add_library( automatalib
 
 set_target_properties( automatalib PROPERTIES DEBUG_POSTFIX d )
 
-link_boost( auto GRAPH )
-link_boost( auto REGEX )
-link_boost( auto FILESYSTEM )
-link_boost( auto IOSTREAMS )
-link_boost( auto SERIALIZATION )
+link_boost( automatalib GRAPH )
+link_boost( automatalib REGEX )
+link_boost( automatalib FILESYSTEM )
+link_boost( automatalib IOSTREAMS )
+link_boost( automatalib SERIALIZATION )
 
 install( FILES ${AUTOMATA_HEADERS} DESTINATION include/automata )
 install( FILES ${AUTOMATA_ROOT_DIR}/.eg DESTINATION . )

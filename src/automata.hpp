@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <tuple>
 #include <utility>
+#include <istream>
+#include <ostream>
 
 namespace automata
 {
@@ -54,23 +56,26 @@ namespace automata
         }
         
         
-        static void load( const std::string& path, Graph& graph )
+        static inline void load( std::istream& is, Graph& graph )
         {
-            std::ifstream inputFileStream( path );
-            boost::dynamic_properties dynamicProperties;
-            getDynamicProperties( dynamicProperties, graph );
-            boost::read_graphml( inputFileStream, graph, dynamicProperties );
+            std::unique_ptr< boost::dynamic_properties > dynamicProperties = 
+                std::make_unique< boost::dynamic_properties >();
+            getDynamicProperties( *dynamicProperties, graph );
+            boost::read_graphml( is, graph, *dynamicProperties );
         }
         
-        static void save( const std::string& path, Graph& graph )
+        static inline void save( std::ostream& os, Graph& graph )
         {
-            std::ofstream outputFileStream( path );
-            boost::dynamic_properties dynamicProperties;
-            getDynamicProperties( dynamicProperties, graph );
-            boost::write_graphml( outputFileStream, graph, dynamicProperties, true );
+            std::unique_ptr< boost::dynamic_properties > dynamicProperties = 
+                std::make_unique< boost::dynamic_properties >();
+            getDynamicProperties( *dynamicProperties, graph );
+            boost::write_graphml( os, graph, *dynamicProperties, true );
         }
             
-        //using Vertex = boost::graph_traits< Graph >::vertex_descriptor;
+        using Vertex = typename boost::graph_traits< Graph >::vertex_descriptor;
+        using VertexIter = typename boost::graph_traits< Graph >::vertex_iterator;
+        using EdgeIter = typename boost::graph_traits< Graph >::edge_iterator;
+        
     };
     
     

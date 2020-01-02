@@ -27,11 +27,11 @@ add_executable( automata_tests
                 
 set_target_properties( automata_tests PROPERTIES DEBUG_POSTFIX d )
 
-link_boost( auto GRAPH )
-link_boost( auto REGEX )
-link_boost( auto FILESYSTEM )
-link_boost( auto IOSTREAMS )
-link_boost( auto SERIALIZATION )
+link_boost( automata_tests GRAPH )
+link_boost( automata_tests REGEX )
+link_boost( automata_tests FILESYSTEM )
+link_boost( automata_tests IOSTREAMS )
+link_boost( automata_tests SERIALIZATION )
 
 link_gtest( automata_tests )
 link_gtest_main( automata_tests )

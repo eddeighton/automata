@@ -10,6 +10,7 @@
         </Directories>
         <Files>
             <Library>${EG}/third_party/install/automata/lib/automatalib.lib</Library>
+            <Library>${EG}/third_party/install/boost/lib/libboost_graph-vc141-mt-x32-1_70.lib</Library>
         </Files>
 	</Package>
 </EG>
