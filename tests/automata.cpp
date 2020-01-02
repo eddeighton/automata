@@ -6,12 +6,6 @@
 
 #include "src/automata.hpp"
 
-
-struct Point
-{
-    int x,y;
-};
-
 enum Actions
 {
     eUp,
