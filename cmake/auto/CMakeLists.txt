@@ -7,6 +7,9 @@ include( ${AUTOMATA_ROOT_DIR}/cmake/common_include.cmake )
 #get boost
 include( ${AUTOMATA_ROOT_DIR}/cmake/boost_include.cmake )
 
+#get glm
+include( ${AUTOMATA_ROOT_DIR}/cmake/glm_include.cmake )
+
 #get automata
 include( ${AUTOMATA_ROOT_DIR}/cmake/auto/auto_include.cmake )
 
@@ -21,11 +24,13 @@ add_executable( auto
 
 set_target_properties( auto PROPERTIES DEBUG_POSTFIX d )
 
-target_link_libraries( auto commonlib.lib )
+link_boost( auto GRAPH )
+link_boost( auto REGEX )
+link_boost( auto FILESYSTEM )
+link_boost( auto IOSTREAMS )
+link_boost( auto SERIALIZATION )
 
-link_boost( auto filesystem )
-link_boost( auto iostreams )
-link_boost( auto serialization )
+target_link_libraries( auto commonlib.lib )
 
 link_auto( auto )
 

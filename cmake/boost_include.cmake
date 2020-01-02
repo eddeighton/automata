@@ -25,7 +25,9 @@ find_package( Boost 1.70.0 REQUIRED QUIET COMPONENTS
     filesystem
     system
     iostreams
-    serialization )
+    serialization
+    graph
+    regex    )
 
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${Boost_LIBRARY_DIRS} )
@@ -38,9 +40,3 @@ add_definitions(-DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE -D_BOOST_CONFIG_SUPPRES
 function( link_boost targetname lib )
     target_link_libraries( ${targetname} ${Boost_${lib}_LIBRARY} )
 endfunction( link_boost )
-
-function( link_boost_usual targetname )
-    target_link_libraries( ${targetname} ${Boost_PROGRAM_OPTIONS_LIBRARY} )
-    target_link_libraries( ${targetname} ${Boost_FILESYSTEM_LIBRARY} )
-    target_link_libraries( ${targetname} ${Boost_SYSTEM_LIBRARY} )
-endfunction( link_boost_usual )

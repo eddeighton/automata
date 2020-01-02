@@ -21,9 +21,11 @@ add_library( automatalib
 
 set_target_properties( automatalib PROPERTIES DEBUG_POSTFIX d )
 
-link_boost( automatalib filesystem )
-link_boost( automatalib iostreams )
-link_boost( automatalib serialization )
+link_boost( auto GRAPH )
+link_boost( auto REGEX )
+link_boost( auto FILESYSTEM )
+link_boost( auto IOSTREAMS )
+link_boost( auto SERIALIZATION )
 
 install( FILES ${AUTOMATA_HEADERS} DESTINATION include/automata )
 install( FILES ${AUTOMATA_ROOT_DIR}/.eg DESTINATION . )

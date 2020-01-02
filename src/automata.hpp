@@ -7,6 +7,7 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/graphml.hpp>
 
 #include <cstdint>
 #include <tuple>
@@ -14,9 +15,6 @@
 
 namespace automata
 {
-    
-    
-    
     template< typename ActionType_, typename StateType_, typename GeometryTraits_ >
     struct AutomataTraits
     {
@@ -27,7 +25,7 @@ namespace automata
         struct State
         {
             int index;
-            StateType state;
+            StateType label;
             typename GeometryTraits::point2d position;
         };
         
@@ -42,6 +40,35 @@ namespace automata
         using Graph = boost::adjacency_list< 
             boost::vecS, boost::vecS, boost::bidirectionalS,
             State, Action >;
+            
+        static void getDynamicProperties( boost::dynamic_properties& dynamicProperties, Graph& graph )
+        {
+            dynamicProperties.property( "State.index",             boost::get( &State::index,          graph ) );
+            dynamicProperties.property( "State.label",             boost::get( &State::label,          graph ) );
+            dynamicProperties.property( "State.position",          boost::get( &State::position,       graph ) );
+            
+            dynamicProperties.property( "Action.index",            boost::get( &Action::index,         graph ) );
+            dynamicProperties.property( "Action.action",           boost::get( &Action::action,        graph ) );
+            dynamicProperties.property( "Action.continuation",     boost::get( &Action::continuation,  graph ) );
+            dynamicProperties.property( "Action.weight",           boost::get( &Action::weight,        graph ) );
+        }
+        
+        
+        static void load( const std::string& path, Graph& graph )
+        {
+            std::ifstream inputFileStream( path );
+            boost::dynamic_properties dynamicProperties;
+            getDynamicProperties( dynamicProperties, graph );
+            boost::read_graphml( inputFileStream, graph, dynamicProperties );
+        }
+        
+        static void save( const std::string& path, Graph& graph )
+        {
+            std::ofstream outputFileStream( path );
+            boost::dynamic_properties dynamicProperties;
+            getDynamicProperties( dynamicProperties, graph );
+            boost::write_graphml( outputFileStream, graph, dynamicProperties, true );
+        }
             
         //using Vertex = boost::graph_traits< Graph >::vertex_descriptor;
     };
