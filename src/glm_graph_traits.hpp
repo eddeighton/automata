@@ -18,7 +18,7 @@
 
 namespace glmGrid
 {
-    enum Actions : int
+    enum Actions : automata::Symbol
     {
         LEFT,
         UP,
@@ -45,8 +45,8 @@ namespace glmGrid
     struct Action
     {
         int index;
-        automata::Symbol action;
-        automata::Symbol continuation;
+        Actions action;
+        Actions continuation;
         float weight;
     };
     
