@@ -19,6 +19,67 @@ inline int xyIndex( int x, int y, int xSize )
     return x * xSize + y;
 }
 
+GraphTraits::Graph generate_grid( int xSize, int ySize )
+{
+    GraphTraits::Graph graph( xSize * ySize );
+    
+    int iIndex = 0;
+    for( int x = 0; x < xSize; ++x )
+    {
+        for( int y = 0; y < ySize; ++y )
+        {
+            iIndex = xyIndex( x, y, xSize );
+            graph[ iIndex ].index = iIndex;
+            graph[ iIndex ].label = iIndex;
+            graph[ iIndex ].position = glm::vec2( x - xSize / 2, y - ySize / 2 );
+        }
+    }
+    
+    int iEdgeIndex = 0;
+    for( int x = 0; x < xSize; ++x )
+    {
+        for( int y = 0; y < ySize; ++y )
+        {
+            iIndex = xyIndex( x, y, xSize );
+            
+            if( x > 0 )
+            {
+                auto e = boost::add_edge( iIndex, xyIndex( x - 1, y, xSize ), graph );
+                graph[ e.first ].index = iEdgeIndex++;
+                graph[ e.first ].action = 0;
+                graph[ e.first ].continuation = 0;
+                graph[ e.first ].weight = 1;
+            }
+            if( x < xSize - 1 )
+            {
+                auto e = boost::add_edge( iIndex, xyIndex( x + 1, y, xSize ), graph );
+                graph[ e.first ].index = iEdgeIndex++;
+                graph[ e.first ].action = 1;
+                graph[ e.first ].continuation = 1;
+                graph[ e.first ].weight = 1;
+            }
+            
+            if( y > 0 )
+            {
+                auto e = boost::add_edge( iIndex, xyIndex( x, y - 1, xSize ), graph );
+                graph[ e.first ].index = iEdgeIndex++;
+                graph[ e.first ].action = 2;
+                graph[ e.first ].continuation = 2;
+                graph[ e.first ].weight = 1;
+            }
+            if( y < ySize - 1 )
+            {
+                auto e = boost::add_edge( iIndex, xyIndex( x, y + 1, xSize ), graph );
+                graph[ e.first ].index = iEdgeIndex++;
+                graph[ e.first ].action = 3;
+                graph[ e.first ].continuation = 3;
+                graph[ e.first ].weight = 1;
+            }
+        }
+    }
+    return graph;
+}    
+
 void command_generate( bool bHelp, const std::vector< std::string >& args )
 {
     boost::filesystem::path inputFilePath;
@@ -44,45 +105,7 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
         const int xSize = 25;
         const int ySize = 25;
         
-        GraphTraits::Graph graph( xSize * ySize );
-        
-        int iIndex = 0;
-        for( int x = 0; x < xSize; ++x )
-        {
-            for( int y = 0; y < ySize; ++y )
-            {
-                iIndex = xyIndex( x, y, xSize );
-                graph[ iIndex ].index = iIndex;
-                graph[ iIndex ].label = iIndex;
-                graph[ iIndex ].position = glm::vec2( x - xSize / 2, y - ySize / 2 );
-            }
-        }
-        
-        for( int x = 0; x < xSize; ++x )
-        {
-            for( int y = 0; y < ySize; ++y )
-            {
-                iIndex = xyIndex( x, y, xSize );
-                
-                if( x > 0 )
-                {
-                    boost::add_edge( iIndex, xyIndex( x - 1, y, xSize ), graph );
-                }
-                if( x < xSize - 1 )
-                {
-                    boost::add_edge( iIndex, xyIndex( x + 1, y, xSize ), graph );
-                }
-                
-                if( y > 0 )
-                {
-                    boost::add_edge( iIndex, xyIndex( x, y - 1, xSize ), graph );
-                }
-                if( y < ySize - 1 )
-                {
-                    boost::add_edge( iIndex, xyIndex( x, y + 1, xSize ), graph );
-                }
-            }
-        }
+        GraphTraits::Graph graph = generate_grid( xSize, ySize );
         
         const boost::filesystem::path graphFilePath = 
             boost::filesystem::edsCannonicalise(
