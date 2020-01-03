@@ -179,6 +179,16 @@ namespace glmMultiGrid
     {
         return x * xSize + y;
     }
+    
+    inline int xFromIndex( int iIndex, int xSize )
+    {
+        return iIndex / xSize;
+    }
+    
+    inline int yFromIndex( int iIndex, int xSize )
+    {
+        return iIndex % xSize;
+    }
 
     inline GraphTraits::Graph generate_grid( int xSize, int ySize, int iComponents )
     {
@@ -221,8 +231,8 @@ namespace glmMultiGrid
             int iSymbolCounter = 0;
             for( automata::Symbol s : symbolProduct )
             {
-                const int x = s / xSize;
-                const int y = s % xSize;
+                const int x = xFromIndex( s, xSize );
+                const int y = yFromIndex( s, xSize );
                 position[ iSymbolCounter++ ] = glm::vec2( x, y );
             }
             graph[ symbol ].position = position;
@@ -238,39 +248,43 @@ namespace glmMultiGrid
                 bool bAddEdge = true;
                 for( automata::Symbol s : actionProduct )
                 {
+                    
+                    const int x = xFromIndex( adjacent[ iActionComponent ], xSize );
+                    const int y = yFromIndex( adjacent[ iActionComponent ], xSize );
+                    
                     switch( s )
                     {
                         case glmGrid::LEFT:  
-                            if( adjacent[ iActionComponent ] >= xSize )
+                            if( x > 0 )
                             {
-                                adjacent[ iActionComponent ] -= xSize;
+                                adjacent[ iActionComponent ] = xyIndex( x - 1, y, xSize );
                                 actions[ iActionComponent ] = glmGrid::LEFT;
                             }
                             else
                                 bAddEdge = false;
                             break;
                         case glmGrid::UP:    
-                            if( adjacent[ iActionComponent ] > 0 )
+                            if( y > 0 )
                             {
-                                adjacent[ iActionComponent ] --;
+                                adjacent[ iActionComponent ] = xyIndex( x, y - 1, xSize );
                                 actions[ iActionComponent ] = glmGrid::UP;
                             }
                             else
                                 bAddEdge = false;   
                             break;
                         case glmGrid::RIGHT: 
-                            if( adjacent[ iActionComponent ] < ( iArea - xSize ) )
+                            if( x < ( xSize - 1 ) )
                             {
-                                adjacent[ iActionComponent ] += xSize;   
+                                adjacent[ iActionComponent ] = xyIndex( x + 1, y, xSize );
                                 actions[ iActionComponent ] = glmGrid::RIGHT;
                             }
                             else
                                 bAddEdge = false;     
                             break;
                         case glmGrid::DOWN:  
-                            if( adjacent[ iActionComponent ] < ( iArea - 1 ) )
+                            if( y < ( ySize - 1 ) )
                             {
-                                adjacent[ iActionComponent ] ++; 
+                                adjacent[ iActionComponent ] = xyIndex( x, y + 1, xSize );
                                 actions[ iActionComponent ] = glmGrid::DOWN;  
                             }
                             else

@@ -2,7 +2,7 @@
 #ifndef ALPHABET_31_12_2019
 #define ALPHABET_31_12_2019
 
-#include "common/assert_verify.hpp"
+//#include "common/assert_verify.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -51,8 +51,8 @@ namespace automata
         
         for( std::size_t sz = 0u; sz != symbolProduct.size(); ++sz )
         {
-            VERIFY_RTE_MSG( symbolProduct[ sz ] >= 0, "Negative component value" );
-            VERIFY_RTE_MSG( symbolProduct[ sz ] < alphabetProduct.components[ sz ].size, "Component value too high" );
+            //VERIFY_RTE_MSG( symbolProduct[ sz ] >= 0, "Negative component value" );
+            //VERIFY_RTE_MSG( symbolProduct[ sz ] < alphabetProduct.components[ sz ].size, "Component value too high" );
             value += symbolProduct[ sz ] * bound;
             bound *= alphabetProduct.components[ sz ].size;
         }
@@ -69,8 +69,8 @@ namespace automata
             bound *= alphabetProduct.components[ sz ].size;
             symbolProduct[ sz ] = ( value % bound ) / priorBound;
         }
-        VERIFY_RTE_MSG( value >= 0, "Negative component value" );
-        VERIFY_RTE_MSG( value < bound, "Component value too high" );
+        //VERIFY_RTE_MSG( value >= 0, "Negative component value" );
+        //VERIFY_RTE_MSG( value < bound, "Component value too high" );
         return symbolProduct;
     }
     
