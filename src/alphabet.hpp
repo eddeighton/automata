@@ -2,26 +2,25 @@
 #ifndef ALPHABET_31_12_2019
 #define ALPHABET_31_12_2019
 
+#include "common/assert_verify.hpp"
 
 #include <cstdint>
 #include <vector>
-
+#include <sstream>
 /*
-#include <array>
-#include <cstdint>
-#include <stdexcept>
-#include <type_traits>
-*/
-
 #define CHECK_COMPONENT_RANGE( value, bound )                      \
 if( value < 0 )                                                    \
 {                                                                  \
-    throw std::runtime_error( "Negative component value" );        \
+    std::ostringstream _os;                                        \
+    _os << "FILE " << __FILE__ << " LINE:" << __LINE__ << " FUNCTION: " << BOOST_CURRENT_FUNCTION << " : Negative component value"; \
+    throw std::runtime_error( _os.str() );                         \
 }                                                                  \
 if( value >= bound )                                               \
 {                                                                  \
-    throw std::out_of_range( "Out of bounds component value: " );  \
-}
+    std::ostringstream _os;                                        \
+    _os << "FILE " << __FILE__ << " LINE:" << __LINE__ << " FUNCTION: " << BOOST_CURRENT_FUNCTION << " : Component value too high"; \
+    throw std::out_of_range( _os.str() );                          \
+}*/
 
 namespace automata
 {
@@ -52,7 +51,8 @@ namespace automata
         
         for( std::size_t sz = 0u; sz != symbolProduct.size(); ++sz )
         {
-            CHECK_COMPONENT_RANGE( symbolProduct[ sz ], alphabetProduct.components[ sz ].size )
+            VERIFY_RTE_MSG( symbolProduct[ sz ] >= 0, "Negative component value" );
+            VERIFY_RTE_MSG( symbolProduct[ sz ] < alphabetProduct.components[ sz ].size, "Component value too high" );
             value += symbolProduct[ sz ] * bound;
             bound *= alphabetProduct.components[ sz ].size;
         }
@@ -69,7 +69,8 @@ namespace automata
             bound *= alphabetProduct.components[ sz ].size;
             symbolProduct[ sz ] = ( value % bound ) / priorBound;
         }
-        CHECK_COMPONENT_RANGE( value, bound )
+        VERIFY_RTE_MSG( value >= 0, "Negative component value" );
+        VERIFY_RTE_MSG( value < bound, "Component value too high" );
         return symbolProduct;
     }
     

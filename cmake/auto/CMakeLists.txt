@@ -1,14 +1,14 @@
 
 cmake_minimum_required(VERSION 3.14.2)
 
-#get common
-include( ${AUTOMATA_ROOT_DIR}/cmake/common_include.cmake )
-
 #get boost
 include( ${AUTOMATA_ROOT_DIR}/cmake/boost_include.cmake )
 
 #get glm
 include( ${AUTOMATA_ROOT_DIR}/cmake/glm_include.cmake )
+
+#get common
+include( ${AUTOMATA_ROOT_DIR}/cmake/common_include.cmake )
 
 #get automata
 include( ${AUTOMATA_ROOT_DIR}/cmake/auto/auto_include.cmake )

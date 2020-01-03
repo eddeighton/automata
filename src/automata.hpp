@@ -27,12 +27,12 @@ namespace automata
             boost::vecS, boost::vecS, boost::bidirectionalS,
             State, Action >;
         
-        static inline void load( std::istream& is, Graph& graph, boost::dynamic_properties& dynamicProperties )
+        static inline void load( std::istream& is, Graph& graph, boost::dynamic_properties dynamicProperties )
         {
             boost::read_graphml( is, graph, dynamicProperties );
         }
         
-        static inline void save( std::ostream& os, Graph& graph, const boost::dynamic_properties& dynamicProperties )
+        static inline void save( std::ostream& os, Graph& graph, boost::dynamic_properties dynamicProperties )
         {
             boost::write_graphml( os, graph, dynamicProperties, true );
         }

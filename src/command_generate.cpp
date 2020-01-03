@@ -5,7 +5,6 @@
 
 #include "common/file.hpp"
 
-
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/graph/graphml.hpp>
@@ -13,86 +12,26 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-inline int xyIndex( int x, int y, int xSize )
-{
-    return x * xSize + y;
-}
-
-glmGrid::GraphTraits::Graph generate_grid( int xSize, int ySize )
-{
-    glmGrid::GraphTraits::Graph graph( xSize * ySize );
-    
-    int iIndex = 0;
-    for( int x = 0; x < xSize; ++x )
-    {
-        for( int y = 0; y < ySize; ++y )
-        {
-            iIndex = xyIndex( x, y, xSize );
-            graph[ iIndex ].index = iIndex;
-            graph[ iIndex ].label = iIndex;
-            graph[ iIndex ].position = glm::vec2( x - xSize / 2, y - ySize / 2 );
-        }
-    }
-    
-    int iEdgeIndex = 0;
-    for( int x = 0; x < xSize; ++x )
-    {
-        for( int y = 0; y < ySize; ++y )
-        {
-            iIndex = xyIndex( x, y, xSize );
-            
-            if( x > 0 )
-            {
-                auto e = boost::add_edge( iIndex, xyIndex( x - 1, y, xSize ), graph );
-                graph[ e.first ].index = iEdgeIndex++;
-                graph[ e.first ].action = glmGrid::LEFT;
-                graph[ e.first ].continuation = glmGrid::LEFT;
-                graph[ e.first ].weight = 1.0f;
-            }
-            
-            if( y > 0 )
-            {
-                auto e = boost::add_edge( iIndex, xyIndex( x, y - 1, xSize ), graph );
-                graph[ e.first ].index = iEdgeIndex++;
-                graph[ e.first ].action = glmGrid::UP;
-                graph[ e.first ].continuation = glmGrid::UP;
-                graph[ e.first ].weight = 1.0f;
-            }
-            
-            if( x < xSize - 1 )
-            {
-                auto e = boost::add_edge( iIndex, xyIndex( x + 1, y, xSize ), graph );
-                graph[ e.first ].index = iEdgeIndex++;
-                graph[ e.first ].action = glmGrid::RIGHT;
-                graph[ e.first ].continuation = glmGrid::RIGHT;
-                graph[ e.first ].weight = 1.0f;
-            }
-            
-            if( y < ySize - 1 )
-            {
-                auto e = boost::add_edge( iIndex, xyIndex( x, y + 1, xSize ), graph );
-                graph[ e.first ].index = iEdgeIndex++;
-                graph[ e.first ].action = glmGrid::DOWN;
-                graph[ e.first ].continuation = glmGrid::DOWN;
-                graph[ e.first ].weight = 1.0f;
-            }
-        }
-    }
-    return graph;
-}    
+ 
 
 void command_generate( bool bHelp, const std::vector< std::string >& args )
 {
     boost::filesystem::path inputFilePath;
     boost::filesystem::path inputFilePath2;
     
+    int xSize = 4;
+    int ySize = 4;
+    int components = 1;
+            
     namespace po = boost::program_options;
     po::options_description commandOptions(" Generate Graph Command");
     {
         commandOptions.add_options()
-            ("file",    po::value< boost::filesystem::path >( &inputFilePath ), "GraphML file to generate")
-            ("file2",    po::value< boost::filesystem::path >( &inputFilePath2 ), "GraphML file to generate")
+            ("file",        po::value< boost::filesystem::path >( &inputFilePath ),     "GraphML file to generate"  )
+            ("file2",       po::value< boost::filesystem::path >( &inputFilePath2 ),    "GraphML file to generate"  )
+            ("x",           po::value< int >( &xSize ),                                 "Size in x dimension"       )
+            ("y",           po::value< int >( &ySize ),                                 "Size in y dimension"       )
+            ("components",  po::value< int >( &components ),                            "Number of components"      )
         ;
     }
     
@@ -110,31 +49,39 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
             boost::filesystem::edsCannonicalise(
                 boost::filesystem::absolute( inputFilePath ) );
                 
-        const int xSize = 25;
-        const int ySize = 25;
-            
+        if( components == 1 )
         {
-            glmGrid::GraphTraits::Graph graph = generate_grid( xSize, ySize );
+            glmGrid::GraphTraits::Graph graph = glmGrid::generate_grid( xSize, ySize );
             std::ofstream outputFileStream( graphFilePath.string() );
             std::cout << "Generating file: " << graphFilePath.string() << std::endl;
             glmGrid::GraphTraits::save( outputFileStream, graph, glmGrid::get_dynamic_properties( graph ) );
-        }
-        
-        
-        {
-            glmGrid::GraphTraits::Graph graph2;
+            
+            if( !inputFilePath2.empty() )
             {
-                std::ifstream inputFileStream( graphFilePath.string() );
-                std::cout << "Loading file: " << graphFilePath.string() << std::endl;
-                glmGrid::GraphTraits::load( inputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
+                glmGrid::GraphTraits::Graph graph2;
+                {
+                    std::ifstream inputFileStream( graphFilePath.string() );
+                    std::cout << "Loading file: " << graphFilePath.string() << std::endl;
+                    glmGrid::GraphTraits::load( inputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
+                }
+                
+                const boost::filesystem::path graphFilePath2 = 
+                    boost::filesystem::edsCannonicalise(
+                        boost::filesystem::absolute( inputFilePath2 ) );
+                std::ofstream outputFileStream( graphFilePath2.string() );
+                std::cout << "Generating file: " << graphFilePath2.string() << std::endl;
+                glmGrid::GraphTraits::save( outputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
             }
             
-            const boost::filesystem::path graphFilePath2 = 
-                boost::filesystem::edsCannonicalise(
-                    boost::filesystem::absolute( inputFilePath2 ) );
-            std::ofstream outputFileStream( graphFilePath2.string() );
-            std::cout << "Generating file: " << graphFilePath2.string() << std::endl;
-            glmGrid::GraphTraits::save( outputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
         }
+        else
+        {
+            
+            glmMultiGrid::GraphTraits::Graph graph = glmMultiGrid::generate_grid( xSize, ySize, components );
+            std::ofstream outputFileStream( graphFilePath.string() );
+            std::cout << "Generating file: " << graphFilePath.string() << std::endl;
+            glmMultiGrid::GraphTraits::save( outputFileStream, graph, glmMultiGrid::get_dynamic_properties( graph ) );
+        }
+        
     }
 }

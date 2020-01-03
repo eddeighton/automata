@@ -10,6 +10,9 @@ include( ${AUTOMATA_ROOT_DIR}/cmake/gtest_include.cmake )
 #get glm
 include( ${AUTOMATA_ROOT_DIR}/cmake/glm_include.cmake )
 
+#get common
+include( ${AUTOMATA_ROOT_DIR}/cmake/common_include.cmake )
+
 #get automata
 include( ${AUTOMATA_ROOT_DIR}/cmake/auto/auto_include.cmake )
 
@@ -35,6 +38,8 @@ link_boost( automata_tests SERIALIZATION )
 
 link_gtest( automata_tests )
 link_gtest_main( automata_tests )
+
+target_link_libraries( automata_tests debug commonlibd.lib optimized commonlib.lib )
 
 link_auto( auto )
 
