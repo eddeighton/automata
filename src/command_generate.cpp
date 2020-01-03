@@ -117,7 +117,7 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
             glmGrid::GraphTraits::Graph graph = generate_grid( xSize, ySize );
             std::ofstream outputFileStream( graphFilePath.string() );
             std::cout << "Generating file: " << graphFilePath.string() << std::endl;
-            glmGrid::GraphTraits::save( outputFileStream, graph );
+            glmGrid::GraphTraits::save( outputFileStream, graph, glmGrid::get_dynamic_properties( graph ) );
         }
         
         
@@ -126,7 +126,7 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
             {
                 std::ifstream inputFileStream( graphFilePath.string() );
                 std::cout << "Loading file: " << graphFilePath.string() << std::endl;
-                glmGrid::GraphTraits::load( inputFileStream, graph2 );
+                glmGrid::GraphTraits::load( inputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
             }
             
             const boost::filesystem::path graphFilePath2 = 
@@ -134,7 +134,7 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
                     boost::filesystem::absolute( inputFilePath2 ) );
             std::ofstream outputFileStream( graphFilePath2.string() );
             std::cout << "Generating file: " << graphFilePath2.string() << std::endl;
-            glmGrid::GraphTraits::save( outputFileStream, graph2 );
+            glmGrid::GraphTraits::save( outputFileStream, graph2, glmGrid::get_dynamic_properties( graph2 ) );
         }
     }
 }

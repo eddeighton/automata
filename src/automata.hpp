@@ -16,60 +16,25 @@
 #include <ostream>
 
 namespace automata
-{
-    template< typename ActionType_, typename StateType_, typename GeometryTraits_ >
+{    
+    template< typename StateType_, typename ActionType_ >
     struct AutomataTraits
     {
-        using ActionType  = ActionType_;
-        using StateType   = StateType_;
-        using GeometryTraits = GeometryTraits_;
-        
-        struct State
-        {
-            int index;
-            StateType label;
-            typename GeometryTraits::point2d position;
-        };
-        
-        struct Action
-        {
-            int index;
-            ActionType action;
-            ActionType continuation;
-            float weight;
-        };
+        using State   = StateType_;
+        using Action  = ActionType_;
         
         using Graph = boost::adjacency_list< 
             boost::vecS, boost::vecS, boost::bidirectionalS,
             State, Action >;
-            
-        static void getDynamicProperties( boost::dynamic_properties& dynamicProperties, Graph& graph )
+        
+        static inline void load( std::istream& is, Graph& graph, boost::dynamic_properties& dynamicProperties )
         {
-            dynamicProperties.property( "State.index",             boost::get( &State::index,          graph ) );
-            dynamicProperties.property( "State.label",             boost::get( &State::label,          graph ) );
-            dynamicProperties.property( "State.position",          boost::get( &State::position,       graph ) );
-            
-            dynamicProperties.property( "Action.index",            boost::get( &Action::index,         graph ) );
-            dynamicProperties.property( "Action.action",           boost::get( &Action::action,        graph ) );
-            dynamicProperties.property( "Action.continuation",     boost::get( &Action::continuation,  graph ) );
-            dynamicProperties.property( "Action.weight",           boost::get( &Action::weight,        graph ) );
+            boost::read_graphml( is, graph, dynamicProperties );
         }
         
-        
-        static inline void load( std::istream& is, Graph& graph )
+        static inline void save( std::ostream& os, Graph& graph, const boost::dynamic_properties& dynamicProperties )
         {
-            std::unique_ptr< boost::dynamic_properties > dynamicProperties = 
-                std::make_unique< boost::dynamic_properties >();
-            getDynamicProperties( *dynamicProperties, graph );
-            boost::read_graphml( is, graph, *dynamicProperties );
-        }
-        
-        static inline void save( std::ostream& os, Graph& graph )
-        {
-            std::unique_ptr< boost::dynamic_properties > dynamicProperties = 
-                std::make_unique< boost::dynamic_properties >();
-            getDynamicProperties( *dynamicProperties, graph );
-            boost::write_graphml( os, graph, *dynamicProperties, true );
+            boost::write_graphml( os, graph, dynamicProperties, true );
         }
             
         using Vertex = typename boost::graph_traits< Graph >::vertex_descriptor;

@@ -3,21 +3,21 @@
 #ifndef GLM_GRAPH_02_01_2019
 #define GLM_GRAPH_02_01_2019
 
+#include "alphabet.hpp"
 #include "automata.hpp"
+
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/adjacency_list.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
 #include <array>
+#include <istream>
+#include <ostream>
 
 namespace glmGrid
 {
-    
-    struct GeometryTraits
-    {
-        using point2d = glm::vec2;
-    };
-
     enum Actions : int
     {
         LEFT,
@@ -35,8 +35,39 @@ namespace glmGrid
         "Down"
     };
 
-    using GraphTraits = automata::AutomataTraits< Actions, int, GeometryTraits >;
+    struct State
+    {
+        int index;
+        automata::Symbol label;
+        glm::vec2 position;
+    };
+    
+    struct Action
+    {
+        int index;
+        automata::Symbol action;
+        automata::Symbol continuation;
+        float weight;
+    };
+    
+    using GraphTraits = automata::AutomataTraits< State, Action >;
 
+    static inline boost::dynamic_properties get_dynamic_properties( GraphTraits::Graph& graph )
+    {
+        boost::dynamic_properties dynamicProperties;
+        
+        dynamicProperties.property( "State.index",             boost::get( &State::index,          graph ) );
+        dynamicProperties.property( "State.label",             boost::get( &State::label,          graph ) );
+        dynamicProperties.property( "State.position",          boost::get( &State::position,       graph ) );
+        
+        dynamicProperties.property( "Action.index",            boost::get( &Action::index,         graph ) );
+        dynamicProperties.property( "Action.action",           boost::get( &Action::action,        graph ) );
+        dynamicProperties.property( "Action.continuation",     boost::get( &Action::continuation,  graph ) );
+        dynamicProperties.property( "Action.weight",           boost::get( &Action::weight,        graph ) );
+        
+        return dynamicProperties;
+    }
+    
 }
 
 namespace std
