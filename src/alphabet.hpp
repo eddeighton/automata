@@ -50,6 +50,23 @@ namespace automata
         CHECK_COMPONENT_RANGE( value, bound )
         return product;
     }
+    
+    /*
+    template< typename T >
+    constexpr inline std::size_t size( T );
+    
+    template< typename T, std::size_t SIZE >
+    constexpr inline std::size_t size( std::array< T, SIZE > )
+    {
+        return SIZE;
+    }
+    
+    
+    template< typename T >
+    constexpr inline std::size_t size( T )
+    {
+        return T::SIZE;
+    }*/
         
 }
 

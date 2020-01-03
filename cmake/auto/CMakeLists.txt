@@ -30,7 +30,7 @@ link_boost( auto FILESYSTEM )
 link_boost( auto IOSTREAMS )
 link_boost( auto SERIALIZATION )
 
-target_link_libraries( auto commonlib.lib )
+target_link_libraries( auto debug commonlibd.lib optimized commonlib.lib )
 
 link_auto( auto )
 

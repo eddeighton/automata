@@ -36,7 +36,7 @@ namespace automata
             int index;
             ActionType action;
             ActionType continuation;
-            int weight;
+            float weight;
         };
         
         using Graph = boost::adjacency_list< 
@@ -77,17 +77,6 @@ namespace automata
         using EdgeIter = typename boost::graph_traits< Graph >::edge_iterator;
         
     };
-    
-    
-    
-    /*
-    template< typename TraitsOne, typename TraitsTwo, typename TraitsResult >
-    inline TraitsResult::Graph product( const TraitsOne::Graph& graphLeft, const TraitsTwo::Graph& graphRight )
-    {
-        
-    }*/
-        
-        
     
 }
 
