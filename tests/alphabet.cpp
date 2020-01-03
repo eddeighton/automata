@@ -1,5 +1,5 @@
 
-
+#include <limits>
 
 #include <gtest/gtest.h>
 
@@ -8,97 +8,141 @@
 
 TEST( AutomataTests, AlphabetProductConversions )
 {
-    using State = automata::Product< int, 4 >;
+    using namespace automata;
     
-    const State bounds = { 3, 4, 5, 6 };
+    const AlphabetProduct alphabetProduct = 
+    { 
+        { 
+            Alphabet{ 3 }, //1
+            Alphabet{ 4 }, //3
+            Alphabet{ 5 }, //12
+            Alphabet{ 6 }  //60
+        } 
+    };
     
-    const std::vector< int > testValues = 
+    const std::vector< Symbol > testValues = 
     {
         0,
         1,
         2,
         3,
         123,
+        1 + 3 + 12 + 60,
         3 * 4 * 5 * 6 - 1 //359
     };
     
+    const std::vector< SymbolProduct > expectedValues =
+    {
+        { 0, 0, 0, 0 },
+        { 1, 0, 0, 0 },
+        { 2, 0, 0, 0 },
+        { 0, 1, 0, 0 },
+        { 0, 1, 0, 2 },
+        { 1, 1, 1, 1 },
+        { 2, 3, 4, 5 },
+    };
+    
+    int iCounter = 0;
     for( int testValue : testValues )
     {
-        const State product = automata::fromValue( testValue, bounds );
-        const int value = automata::fromProduct( product, bounds );
+        const SymbolProduct product = fromSymbol( testValue, alphabetProduct );
+        ASSERT_EQ( product, expectedValues[ iCounter ] );
+        const Symbol value = fromProduct( product, alphabetProduct );
         ASSERT_EQ( value, testValue );
+        ++iCounter;
     }
 }
 
 TEST( AutomataTests, AlphabetProductConversionsExceptionsExceptionsValues )
 {
-    using State = automata::Product< int, 4 >;
+    using namespace automata;
     
-    const State bounds = { 3, 4, 5, 6 };
+    const AlphabetProduct alphabetProduct = 
+    { 
+        { 
+            Alphabet{ 3 }, //1
+            Alphabet{ 4 }, //3
+            Alphabet{ 5 }, //12
+            Alphabet{ 6 }  //60
+        } 
+    };
     
     {
-        const std::vector< int > testValues = 
+        const std::vector< Symbol > testValues = 
         {
-            -123123123,
-            -1
+            -1,
+            -355,
+            -360,
+            std::numeric_limits< Symbol >::min()
         };
-        
-        for( int testValue : testValues )
+        for( Symbol testValue : testValues )
         {
-            ASSERT_THROW( automata::fromValue( testValue, bounds ), std::runtime_error );
+            ASSERT_THROW( automata::fromSymbol( testValue, alphabetProduct ), std::runtime_error );
         }
     }
     {
         const std::vector< int > testValues = 
         {
             3 * 4 * 5 * 6, //360
-            1010101010
+            361,
+            std::numeric_limits< Symbol >::max()
         };
-        
         for( int testValue : testValues )
         {
-            ASSERT_THROW( automata::fromValue( testValue, bounds ), std::out_of_range );
+            ASSERT_THROW( automata::fromSymbol( testValue, alphabetProduct ), std::out_of_range );
         }
     }
 }
 
 TEST( AutomataTests, AlphabetProductConversionsExceptionsExceptionsProducts )
 {
-    using State = automata::Product< int, 4 >;
+    using namespace automata;
     
-    const State bounds = { 3, 4, 5, 6 };
+    const AlphabetProduct alphabetProduct = 
+    { 
+        { 
+            Alphabet{ 3 }, //1
+            Alphabet{ 4 }, //3
+            Alphabet{ 5 }, //12
+            Alphabet{ 6 }  //60
+        } 
+    };
     
     {
-        const std::vector< State > testProducts = 
+        const std::vector< SymbolProduct > testProducts = 
         {
             { -1, 0, 0, 0 },
             { 0, -1, 0, 0 },
             { 0, 0, -1, 0 },
-            { 0, 0, 0, -1 }
+            { 0, 0, 0, -1 },
+            { std::numeric_limits< Symbol >::min(), 0, 0, 0 },
+            { 0, std::numeric_limits< Symbol >::min(), 0, 0 },
+            { 0, 0, std::numeric_limits< Symbol >::min(), 0 },
+            { 0, 0, 0, std::numeric_limits< Symbol >::min() }
         };
         
-        for( const State& product : testProducts )
+        for( const SymbolProduct& product : testProducts )
         {
-            ASSERT_THROW( automata::fromProduct( product, bounds ), std::runtime_error );
+            ASSERT_THROW( automata::fromProduct( product, alphabetProduct ), std::runtime_error );
         }
     }
     {
-        const std::vector< State > testProducts = 
+        const std::vector< SymbolProduct > testProducts = 
         {
             { 3, 0, 0, 0 },
             { 0, 4, 0, 0 },
             { 0, 0, 5, 0 },
             { 0, 0, 0, 6 },
             
-            { 101010, 0, 0, 0 },
-            { 0, 101010, 0, 0 },
-            { 0, 0, 101010, 0 },
-            { 0, 0, 0, 101010 }
+            { std::numeric_limits< Symbol >::max(), 0, 0, 0 },
+            { 0, std::numeric_limits< Symbol >::max(), 0, 0 },
+            { 0, 0, std::numeric_limits< Symbol >::max(), 0 },
+            { 0, 0, 0, std::numeric_limits< Symbol >::max() }
         };
         
-        for( const State& product : testProducts )
+        for( const SymbolProduct& product : testProducts )
         {
-            ASSERT_THROW( automata::fromProduct( product, bounds ), std::out_of_range );
+            ASSERT_THROW( automata::fromProduct( product, alphabetProduct ), std::out_of_range );
         }
     }
 }

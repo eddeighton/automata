@@ -2,9 +2,16 @@
 #ifndef ALPHABET_31_12_2019
 #define ALPHABET_31_12_2019
 
+
+#include <cstdint>
+#include <vector>
+
+/*
 #include <array>
 #include <cstdint>
 #include <stdexcept>
+#include <type_traits>
+*/
 
 #define CHECK_COMPONENT_RANGE( value, bound )                      \
 if( value < 0 )                                                    \
@@ -18,56 +25,69 @@ if( value >= bound )                                               \
 
 namespace automata
 {
-    template< typename T, std::size_t Size >
-    using Product = std::array< T, Size >;
     
-    template< typename T, std::size_t Size >
-    inline T fromProduct( const Product< T, Size >& product, const Product< T, Size >& bounds )
+    using Symbol = int;
+    using SymbolProduct = std::vector< Symbol >;
+    
+    struct Alphabet
     {
-        T value = T();
-        T bound = 1U;
-        for( std::size_t sz = 0u; sz != Size; ++sz )
+        Symbol size;
+    };
+    
+    struct AlphabetProduct
+    {
+        std::vector< Alphabet > components;
+    };
+    
+    
+    inline Symbol fromProduct( const SymbolProduct& symbolProduct, const AlphabetProduct& alphabetProduct )
+    {
+        Symbol value = 0U;
+        Symbol bound = 1U;
+        
+        if( alphabetProduct.components.size() != symbolProduct.size() )
         {
-            CHECK_COMPONENT_RANGE( product[ sz ], bounds[ sz ] )
-            
-            value += product[ sz ] * bound;
-            bound *= bounds[ sz ];
+            throw std::runtime_error( "Incompatible alphabet product with symbol product" );
+        }
+        
+        for( std::size_t sz = 0u; sz != symbolProduct.size(); ++sz )
+        {
+            CHECK_COMPONENT_RANGE( symbolProduct[ sz ], alphabetProduct.components[ sz ].size )
+            value += symbolProduct[ sz ] * bound;
+            bound *= alphabetProduct.components[ sz ].size;
         }
         return value;
     }
     
-    template< typename T, std::size_t Size >
-    inline Product< T, Size > fromValue( const T value, const Product< T, Size >& bounds )
+    inline SymbolProduct fromSymbol( Symbol value, const AlphabetProduct& alphabetProduct )
     {
-        Product< T, Size > product;
-        T bound = 1U;
-        for( std::size_t sz = 0u; sz != Size; ++sz )
+        SymbolProduct symbolProduct( alphabetProduct.components.size() );
+        Symbol bound = 1U;
+        for( std::size_t sz = 0u; sz != symbolProduct.size(); ++sz )
         {
-            T priorBound = bound;
-            bound *= bounds[ sz ];
-            product[ sz ] = ( value % bound ) / priorBound;
+            Symbol priorBound = bound;
+            bound *= alphabetProduct.components[ sz ].size;
+            symbolProduct[ sz ] = ( value % bound ) / priorBound;
         }
         CHECK_COMPONENT_RANGE( value, bound )
-        return product;
-    }
-    
-    /*
-    template< typename T >
-    constexpr inline std::size_t size( T );
-    
-    template< typename T, std::size_t SIZE >
-    constexpr inline std::size_t size( std::array< T, SIZE > )
-    {
-        return SIZE;
+        return symbolProduct;
     }
     
     
-    template< typename T >
-    constexpr inline std::size_t size( T )
+    inline AlphabetProduct combine( const AlphabetProduct& left, const AlphabetProduct& right )
     {
-        return T::SIZE;
-    }*/
-        
+        AlphabetProduct result( left );
+        std::copy( right.components.begin(), right.components.end(), std::back_inserter( result.components ) );
+        return result;
+    }
+       
+    inline AlphabetProduct combine( const Alphabet& left, const Alphabet& right )
+    {
+        AlphabetProduct result;
+        result.components.push_back( left );
+        result.components.push_back( right );
+        return result;
+    } 
 }
 
 #endif //ALPHABET_31_12_2019

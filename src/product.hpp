@@ -18,6 +18,12 @@ namespace automata
     {
         TraitsResult::Graph g;
         
+        const std::size_t szAlphabetProductComponents = 
+            components< typename TraitsOne::Graph::ActionType >() *
+            components< typename TraitsTwo::Graph::ActionType >();
+            
+            
+        
         return g;
     }
     
