@@ -78,6 +78,17 @@ void command_generate( bool bHelp, const std::vector< std::string >& args )
         {
             
             glmMultiGrid::GraphTraits::Graph graph = glmMultiGrid::generate_grid( xSize, ySize, components );
+            {
+                std::pair< glmMultiGrid::GraphTraits::VertexIter, glmMultiGrid::GraphTraits::VertexIter >
+                    vertices = boost::vertices( graph );
+                    
+                std::pair< glmMultiGrid::GraphTraits::EdgeIter, glmMultiGrid::GraphTraits::EdgeIter >
+                    edges = boost::edges( graph );
+                    
+                std::cout << "Generated: " << std::distance( vertices.first, vertices.second ) << 
+                    " vertices with: " << std::distance( edges.first, edges.second ) << " edges." << std::endl;
+            }
+            
             std::ofstream outputFileStream( graphFilePath.string() );
             std::cout << "Generating file: " << graphFilePath.string() << std::endl;
             glmMultiGrid::GraphTraits::save( outputFileStream, graph, glmMultiGrid::get_dynamic_properties( graph ) );
